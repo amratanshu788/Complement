@@ -1,4 +1,13 @@
 {
+  "name": "complement",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://amratanshu788.github.io/Complement/",
+  "dependencies": {
+    ...
+  }
+}
+{
   "name": "vite-react-typescript-starter",
   "private": true,
   "version": "0.0.0",
