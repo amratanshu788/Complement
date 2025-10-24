@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Coffee, Heart, Sparkles } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Coffee, Heart, Sparkles, Music, VolumeX } from 'lucide-react';
 
 const compliments = [
   "You have the warmest smile 😊",
@@ -20,6 +20,10 @@ function App() {
   const [confetti, setConfetti] = useState<number[]>([]);
   const [chaiBreakActive, setChaiBreakActive] = useState(false);
   const [reminderMessage, setReminderMessage] = useState('');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioFile, setAudioFile] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const generateCompliment = () => {
     const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
@@ -52,9 +56,67 @@ function App() {
     }, 30000);
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('audio/')) {
+      const url = URL.createObjectURL(file);
+      setAudioFile(url);
+      if (audioRef.current) {
+        audioRef.current.src = url;
+      }
+    }
+  };
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.3;
+    }
+  }, [audioFile]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-peach-50 via-cream-50 to-rose-50 flex items-center justify-center p-6">
-      <div className="max-w-2xl w-full">
+    <div className="min-h-screen bg-gradient-to-br from-peach-50 via-cream-50 to-rose-50 flex items-center justify-center p-6 relative">
+      <audio ref={audioRef} />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="audio/*"
+        onChange={handleFileUpload}
+        className="hidden"
+      />
+
+      <div className="absolute top-6 right-6 flex gap-2">
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="bg-white/80 backdrop-blur-sm p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 text-amber-700"
+          title="Upload music"
+        >
+          <Music className="w-6 h-6" />
+        </button>
+
+        {audioFile && (
+          <button
+            onClick={toggleMusic}
+            className="bg-white/80 backdrop-blur-sm p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 text-amber-700"
+            title={isPlaying ? 'Pause music' : 'Play music'}
+          >
+            {isPlaying ? <VolumeX className="w-6 h-6" /> : <Music className="w-6 h-6" />}
+          </button>
+        )}
+      </div>
+      <div className="max-w-2xl w-full relative z-10">
         <div className="text-center mb-8 animate-fade-in">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Coffee className="w-10 h-10 text-amber-700" />
