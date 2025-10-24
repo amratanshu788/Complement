@@ -9,9 +9,7 @@ const compliments = [
   "You handle everything with such grace ✨",
   "Your presence makes everything better 🌟",
   "You're stronger than you know 💪",
-  "The way you care about others is beautiful 💕",
   "You deserve all the good things coming your way 🌈",
-  "Your kindness is a superpower 🦸‍♀️"
 ];
 
 function App() {
@@ -44,7 +42,7 @@ function App() {
 
   const startChaiBreak = () => {
     setChaiBreakActive(true);
-    setReminderMessage("Step away from the laptop… even superheroes need chai 💪");
+    setReminderMessage("Step away from the Work… even superheroes need chai 💪");
 
     setTimeout(() => {
       setReminderMessage("Your chai must be missing you already 😅");
